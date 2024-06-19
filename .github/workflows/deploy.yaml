@@ -1,0 +1,34 @@
+name: Deploy Kubernetes Configurations to GKE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: mycicdproject-426810
+      CLUSTER_NAME: primary-cluster
+      CLUSTER_REGION: us-central1
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        version: 'latest'
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ env.PROJECT_ID }}
+
+    - name: Configure kubectl
+      run: |
+        gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION --project $PROJECT_ID
+
+    - name: Apply Kubernetes Configurations
+      run: |
+        kubectl apply -f k8s/manifests/
+        kubectl apply -f k8s/ingress/
+        kubectl apply -f k8s/secrets/
