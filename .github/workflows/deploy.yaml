@@ -34,6 +34,6 @@ jobs:
 
     - name: Apply Kubernetes Configurations
       run: |
-        kubectl apply -f k8s/manifests/
-        kubectl apply -f k8s/ingress/
-        kubectl apply -f k8s/secrets/
+        kubectl apply -f manifests/
+        kubectl apply -f ingress/
+        kubectl apply -f secrets/
